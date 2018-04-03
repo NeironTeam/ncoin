@@ -2,14 +2,14 @@ package ncoin_wallet
 
 import "testing"
 
-func (b *block) testStingfy(t *testing.T) {
+func TestStingfy(t *testing.T) {
 
 }
 
-func (b *block) testCalculateHash(t *testing.T) {
+func TestCalculateHash(t *testing.T) {
 
 }
 
-func (b *block) testCheckHash(t *testing.T) {
+func TestCheckHash(t *testing.T) {
 
 }

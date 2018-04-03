@@ -1,9 +1,8 @@
 package ncoin_wallet
 
 import (
-	"strconv"
-	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 )
 
 // private Block struct
@@ -16,21 +15,19 @@ type block struct {
 	merkelRoot string
 }
 
-func (b *block) Stingfy() string {
-	var tr string = ""
-	for i := 1; i < len(b.transactions); i++ {
-		tr = tr + b.transactions[i].Stingfy()
+func (b *block) Stringify()(s string){
+	for _, transaction := range b.transactions {
+		s = fmt.Sprintf("%s%s", s, transaction.Stringify())
 	}
-	return b.timestamp + tr + b.prevHash + strconv.FormatFloat(b.fee, 'f',10,64) + b.merkelRoot
+	s = fmt.Sprintf("%s%s%s%f%s", b.timestamp, s, b.prevHash, b.fee, b.merkelRoot)
+	return
 }
 
 func (b *block) CalculateHash() string {
-	h := sha256.New()
-	h.Write([]byte(b.Stingfy()))
-	return hex.EncodeToString(h.Sum(nil))
+	return hex.EncodeToString(CalculateGenericHash(b.Stringify()))
 }
 
 func (b *block) CheckHash( inputHash string) bool {
-	return b.calculateHash() == inputHash
+	return b.CalculateHash() == inputHash
 
 }
