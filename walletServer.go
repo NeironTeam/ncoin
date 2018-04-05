@@ -1,7 +1,7 @@
-/* walletServer.go
-+  Autor: NeironTeam
-+  Licencia: MIT License, Copyright (c) 2018 Neiron
-*/
+// walletServer.go
+// Autor: NeironTeam
+//  Licencia: MIT License, Copyright (c) 2018 Neiron
+//
 package main
 
 import ("fmt"
@@ -9,14 +9,14 @@ import ("fmt"
         "wallet"
         "transaction")
 
-/* Manager de wallets, capaz de conectarse a la red. */
+// Manager de wallets, capaz de conectarse a la red.
 type WalletServer struct {
     online_wallets       []Wallet       // Wallet "instances"
     node_list            []string       // Server-IPs
     pending_transactions []Transaction  // Transaciones pendientes de enviar
   }
 
-/* Inicializa el servidor, lee la lista de nodos e inicializa las carteras. */
+// Inicializa el servidor, lee la lista de nodos e inicializa las carteras.
 func (s *WalletServer) Run() {
     var command string
 
@@ -37,25 +37,25 @@ func (s *WalletServer) Run() {
     }
 }
 
-/* Sincroniza con la blockchain para actualizar el saldo de todas las
-+  carteras que maneja y enviar las transacciones pendientes,
-+  además, actualiza su lista de nodos. */
+// Sincroniza con la blockchain para actualizar el saldo de todas las
+// carteras que maneja y enviar las transacciones pendientes,
+// además, actualiza su lista de nodos.
 func (s *WalletServer) Sync() {
   fmt.Println("Syncing...")
 }
 
-/* Actualiza el estado de una sola cartera. Toma la dirección de la cartera
-+  como argumento */
+// Actualiza el estado de una sola cartera. Toma la dirección de la cartera
+// como argumento
 func (s *WalletServer) WalletSync(address uint64) {
 
 }
 
-/* Crea una nueva cartera y la añade a sus carteras */
+// Crea una nueva cartera y la añade a sus carteras
 func NewWallet() Wallet {
 
 }
 
-/* Detiene el servidor, asegura los cambios, cierra las conexiones, etc... */
+// Detiene el servidor, asegura los cambios, cierra las conexiones, etc...
 func (s *WalletServer) Stop() {
   fmt.Println("Stopping server...")
 }

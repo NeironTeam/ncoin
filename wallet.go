@@ -1,7 +1,7 @@
-/* wallet.go
-+  Autor: NeironTeam
-+  Licencia: MIT License, Copyright (c) 2018 Neiron
-*/
+// wallet.go
+// Autor: NeironTeam
+// Licencia: MIT License, Copyright (c) 2018 Neiron
+//
 package ncoin_wallet
 
 import (
@@ -11,7 +11,7 @@ import (
     "github.com/akamensky/base58"
 )
 
-/* Cartera */
+// Cartera
 type Wallet struct {
     address     string
     privateKey  *rsa.PrivateKey
@@ -39,15 +39,14 @@ func (w *Wallet) PublicKey() *rsa.PublicKey {
     return w.publicKey
 }
 
-/* Desbloquea la wallet, requiere una private_key como parametro. */
+// Desbloquea la wallet, requiere una private_key como parametro.
 func (w *Wallet) Unlock(pk uint64) {
 
 }
 
-/* Based on protocol defined in https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses
-+  Generates a address on base58check format assuming private and public keys
-+  have been already declared.
-*/
+// Based on protocol defined in https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses
+//  Generates a address on base58check format assuming private and public keys
+// have been already declared.
 func (w *Wallet) GenerateAddress() {
     bytes := []byte(w.publicKey.E)
     data := &bytes
@@ -85,23 +84,23 @@ func (w *Wallet) GenerateAddress() {
     w.address = base58_address
 }
 
-/* Envía la cantidad de NCoin indicada a la dirección indicada. Requiere
-+  candidad y dirección como parámetros . */
+// Envía la cantidad de NCoin indicada a la dirección indicada. Requiere
+// candidad y dirección como parámetros .
 func (w *Wallet) SendTransaction(amount float64, address uint64) {
 
 }
 
-/* Devuelve la dirección de la cartera. */
+// Devuelve la dirección de la cartera.
 func (w *Wallet) Address() uint64 {
     return w.address
 }
 
-/* Devuelve el saldo de la cartera. */
+// Devuelve el saldo de la cartera.
 func (w *Wallet) Balance() float64 {
     return w.balance
 }
 
-/* Devuelve la private_key de la cartera. */
+// Devuelve la private_key de la cartera. 
 func (w *Wallet) PrivateKey() *rsa.PrivateKey {
     return w.privateKey
 }

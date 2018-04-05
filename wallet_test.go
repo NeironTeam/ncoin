@@ -1,7 +1,7 @@
-/* wallet_test.go
-+  Autor: NeironTeam
-+  Licencia: MIT License, Copyright (c) 2018 Neiron
-*/
+// wallet_test.go
+// Autor: NeironTeam
+// Licencia: MIT License, Copyright (c) 2018 Neiron
+//
 package ncoin_wallet
 
 import (

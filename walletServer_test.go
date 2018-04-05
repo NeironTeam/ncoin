@@ -1,7 +1,6 @@
-/* walletSever_test.go
-+  Autor: NeironTeam
-+  Licencia: MIT License, Copyright (c) 2018 Neiron
-*/
+// walletSever_test.go
+// Autor: NeironTeam
+// Licencia: MIT License, Copyright (c) 2018 Neiron
 package main
 
 import (
