@@ -1,4 +1,4 @@
-package wallet
+package ncoin_wallet
 
 import "testing"
 
