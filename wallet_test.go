@@ -2,7 +2,7 @@
 +  Autor: NeironTeam
 +  Licencia: MIT License, Copyright (c) 2018 Neiron
 */
-package wallet
+package ncoin_wallet
 
 import (
     "testing"
