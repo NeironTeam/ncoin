@@ -2,20 +2,11 @@ package ncoin_wallet
 
 import (
     "crypto/rsa"
-    "crypto/sha256"
     "crypto"
-    "strconv"
     "crypto/rand"
+    "fmt"
 )
-type Transact interface {
-    NewTransaction(addressTo uint64, addressFrom uint64, quantity float64) Transaction
-    GetSign() []byte
-    Quantity() float64
-    AddressFrom() uint64
-    AddressTo() uint64
-    SignTransaction(privateKey *rsa.PrivateKey) error
-    Stringify() string
-}
+
 
 type Transaction struct {
     addressTo   uint64
@@ -25,7 +16,7 @@ type Transaction struct {
     fee         float64
 }
 
-func (t *Transaction) NewTransaction(addressTo uint64, addressFrom uint64, quantity float64, fee float64) Transaction {
+func NewTransaction(addressTo uint64, addressFrom uint64, quantity float64, fee float64) Transaction {
     return Transaction{addressFrom:addressFrom,addressTo:addressTo,quantity:quantity, fee:fee}
 }
 
@@ -53,11 +44,8 @@ func (t *Transaction) AddressTo() uint64 {
 }
 
 
-func (t *Transaction) SignTransaction(privateKey *rsa.PrivateKey) error{
-    sha_256 := sha256.New()
-    sha_256.Write([]byte(t.toString()))
-
-    hash := sha_256.Sum(nil)
+func (t *Transaction) Sign(privateKey *rsa.PrivateKey) error{
+    hash := CalculateGenericHash(t.toString())
     sign, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, hash)
     if err != nil{
         return err
@@ -66,17 +54,19 @@ func (t *Transaction) SignTransaction(privateKey *rsa.PrivateKey) error{
     return nil
 }
 
-func (t *Transaction) toString() string{
-    s := ""
-    s += (string) (t.addressTo)
-    s += (string) (t.addressFrom)
-    s += strconv.FormatFloat(t.quantity, 'f', 5, 64)
-    s += strconv.FormatFloat(t.fee, 'f', 5, 64)
-    return s
+func (t *Transaction) Verify(publicKey *rsa.PublicKey) error{
+    hash := CalculateGenericHash(t.toString())
+    err := rsa.VerifyPKCS1v15(publicKey,crypto.SHA256,hash, t.GetSign() );
+
+    return err
 }
 
-func (t *Transaction) Stringify() string{
-    s := ""
+func (t *Transaction) toString() (s string){
+    s = fmt.Sprintf("%d%d%f%f", t.addressTo, t.addressFrom, t.quantity, t.fee)
+    return
+}
 
-    return s
+func (t *Transaction) Stringify() (s string){
+    s = fmt.Sprintf("%d%d%f%f%s", t.addressTo, t.addressFrom, t.quantity, t.fee, t.sign)
+    return
 }
