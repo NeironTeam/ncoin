@@ -1,13 +1,12 @@
 // walletServer.go
 // Autor: NeironTeam
-//  Licencia: MIT License, Copyright (c) 2018 Neiron
-//
+// Licencia: MIT License, Copyright (c) 2018 Neiron
+
 package main
 
 import ("fmt"
         "time"
-        "wallet"
-        "transaction")
+        "..")
 
 // Manager de wallets, capaz de conectarse a la red.
 type WalletServer struct {
@@ -19,6 +18,8 @@ type WalletServer struct {
 // Inicializa el servidor, lee la lista de nodos e inicializa las carteras.
 func (s *WalletServer) Run() {
     var command string
+
+    // TODO: Cargar Wallets guardadas
 
     fmt.Println("Initializing walletServer...")
     s.Sync()
@@ -35,6 +36,9 @@ func (s *WalletServer) Run() {
         fmt.Println(command)
         }
     }
+
+    // TODO: Guardar Wallets cargadas?
+
 }
 
 // Sincroniza con la blockchain para actualizar el saldo de todas las
@@ -46,13 +50,22 @@ func (s *WalletServer) Sync() {
 
 // Actualiza el estado de una sola cartera. Toma la dirección de la cartera
 // como argumento
-func (s *WalletServer) WalletSync(address uint64) {
+func (s *WalletServer) WalletSync(wallet Wallet) {
 
 }
 
 // Crea una nueva cartera y la añade a sus carteras
-func NewWallet() Wallet {
+func (s *WalletServer) NewWallet() Wallet {
+    // GenerateAddress() pertenece a utils.go
+    sk, pk = GenerateAddress()
 
+    new_wallet = Wallet{"", sk, pk, 0}
+    new_wallet.GenerateAddress()
+    s.WalletSync()
+
+    append(s.online_wallets, new_wallet)
+
+    return Wallet
 }
 
 // Detiene el servidor, asegura los cambios, cierra las conexiones, etc...
