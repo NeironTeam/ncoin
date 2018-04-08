@@ -13,4 +13,4 @@ func (b *Blockchain) AddBlock(n block) {}
 // GetMerkleTreeRoot function iterates over whole blockchain blocks and
 // generates its hash. Then combines that hash and returns the root of blcks
 // hash Merkle Tree.
-func (b *blockchain) GetMerkleTreeRoot() (hash string) { return }
+func (b *Blockchain) GetMerkleTreeRoot() (hash string) { return }

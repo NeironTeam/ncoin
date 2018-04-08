@@ -1,7 +1,7 @@
 // wallet.go
 // Autor: NeironTeam
 // Licencia: MIT License, Copyright (c) 2018 Neiron
-//
+
 package ncoin_wallet
 
 import (
@@ -31,7 +31,7 @@ func (w *Wallet) SetPrivateKey(privateKey *rsa.PrivateKey) {
     w.privateKey = privateKey
 }
 
-func (w *Wallet) SetAddress(address uint64) {
+func (w *Wallet) SetAddress(address string) {
     w.address = address
 }
 
@@ -100,7 +100,7 @@ func (w *Wallet) Balance() float64 {
     return w.balance
 }
 
-// Devuelve la private_key de la cartera. 
+// Devuelve la private_key de la cartera.
 func (w *Wallet) PrivateKey() *rsa.PrivateKey {
     return w.privateKey
 }
