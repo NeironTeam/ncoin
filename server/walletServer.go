@@ -6,7 +6,7 @@ package main
 
 import ("fmt"
         "time"
-        "..")
+        "github.com/NeironTeam/ncoin-wallet")
 
 // Manager de wallets, capaz de conectarse a la red.
 type WalletServer struct {
