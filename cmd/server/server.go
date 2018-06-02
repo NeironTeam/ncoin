@@ -1,18 +1,20 @@
-// walletServer.go
+// server.go
 // Autor: NeironTeam
 // Licencia: MIT License, Copyright (c) 2018 Neiron
 
 package main
 
-import ("fmt"
-        "time"
-        "github.com/NeironTeam/ncoin-wallet")
+import (
+    "fmt"
+    "time"
+    ncw "github.com/NeironTeam/ncoin-wallet"
+)
 
 // Manager de wallets, capaz de conectarse a la red.
 type WalletServer struct {
-    online_wallets       []Wallet       // Wallet "instances"
+    online_wallets       []ncw.Wallet       // Wallet "instances"
     node_list            []string       // Server-IPs
-    pending_transactions []Transaction  // Transaciones pendientes de enviar
+    pending_transactions []ncw.Transaction  // Transaciones pendientes de enviar
   }
 
 // Inicializa el servidor, lee la lista de nodos e inicializa las carteras.
@@ -50,23 +52,10 @@ func (s *WalletServer) Sync() {
 
 // Actualiza el estado de una sola cartera. Toma la dirección de la cartera
 // como argumento
-func (s *WalletServer) WalletSync(wallet Wallet) {
+func (s *WalletServer) WalletSync(wallet ncw.Wallet) {
 
 }
 
-// Crea una nueva cartera y la añade a sus carteras
-func (s *WalletServer) NewWallet() Wallet {
-    // GenerateAddress() pertenece a utils.go
-    sk, pk = GenerateAddress()
-
-    new_wallet = Wallet{"", sk, pk, 0}
-    new_wallet.GenerateAddress()
-    s.WalletSync()
-
-    append(s.online_wallets, new_wallet)
-
-    return Wallet
-}
 
 // Detiene el servidor, asegura los cambios, cierra las conexiones, etc...
 func (s *WalletServer) Stop() {
