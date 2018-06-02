@@ -10,3 +10,11 @@ func CalculateGenericHash(s string) []byte{
 	h.Write([]byte(s))
 	return h.Sum(nil)
 }
+
+func ProcessSHA256(data *[]byte){
+
+}
+
+func ProcessRIPEMD160(data *[]byte){
+
+}

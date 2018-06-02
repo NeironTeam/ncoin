@@ -12,6 +12,9 @@ import (
 	"fmt"
 	"crypto/x509"
 	"encoding/pem"
+	"encoding/binary"
+	"bytes"
+	"io"
 )
 
 const WALLET_FOLDER  = ".ncoin"
@@ -56,7 +59,7 @@ func (w *Wallet) SendTransaction(amount float64, address uint64) {
 }
 
 // Devuelve la dirección de la cartera.
-func (w *Wallet) Address() uint64 {
+func (w *Wallet) Address() string {
     return w.address
 }
 
@@ -85,8 +88,10 @@ func (w *Wallet) generateKeys() (e error) {
 //  Generates a address on base58check format assuming private and public keys
 // have been already declared.
 func (w *Wallet) generateAddress() {
-	bytes := []byte(w.publicKey.E)
-	data := &bytes
+	var bytes_array []byte
+	a := io.Writer(bytes.NewBuffer(bytes_array))
+	binary.Write(a, binary.LittleEndian, w.publicKey.E)
+	data := &bytes_array
 	var checksum [4]byte
 	var base58_address string
 
@@ -96,10 +101,10 @@ func (w *Wallet) generateAddress() {
 
 	// Add version byte
 	binary_address := []byte{0}
-	for i := 0; i < len(bytes); i++ {
-		binary_address = append(binary_address, bytes[i])
+	for i := 0; i < len(bytes_array); i++ {
+		binary_address = append(binary_address, bytes_array[i])
 	}
-	bytes = binary_address
+	bytes_array = binary_address
 
 	//step 4 & 5
 	ProcessSHA256(data)
@@ -107,7 +112,7 @@ func (w *Wallet) generateAddress() {
 
 	// get the checksum
 	for i := 0; i < 4; i++ {
-		checksum[i] = bytes[i]
+		checksum[i] = bytes_array[i]
 	}
 
 	// Final binary address
