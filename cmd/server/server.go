@@ -7,6 +7,7 @@ package main
 import (
     "fmt"
     "time"
+    "net/http"
     ncw "github.com/NeironTeam/ncoin-wallet"
 )
 
@@ -17,6 +18,10 @@ type WalletServer struct {
     pending_transactions []ncw.Transaction  // Transaciones pendientes de enviar
   }
 
+func (s *WalletServer) HttpHandler() {
+    fmt.Println("COMEME LOS HUEVOS")
+}
+
 // Inicializa el servidor, lee la lista de nodos e inicializa las carteras.
 func (s *WalletServer) Run() {
     var command string
@@ -25,19 +30,30 @@ func (s *WalletServer) Run() {
 
     fmt.Println("Initializing walletServer...")
     s.Sync()
-    fmt.Println("Sync for 0 wallets completed succesfully." )
-    fmt.Println("Waiting for orders...")
+    fmt.Println("Wallet sync completed succesfully." )
+    fmt.Println("Starting HTTP server")
 
-    for {
-        fmt.Scanln(&command)
-        if command == "stop" {
-            s.Stop()
-            break
-        } else {
-        fmt.Println("Uknown command")
-        fmt.Println(command)
-        }
+    server := &http.Server{
+        Addr: ":11811",
+        Handler: s.HttpHandler,
+        ReadTimeout: 10 * time.Seconds,
+        WriteTimeout: 10 * time.Seconds,
+        MaxHeaderBytes: 1 << 20
     }
+    fmt.Println("Server started, press any key to exit")
+    fmt.Scanln()
+
+    // DEPRECATED:
+    // for {
+    //     fmt.Scanln(&command)
+    //     if command == "stop" {
+    //         s.Stop()
+    //         break
+    //     } else {
+    //     fmt.Println("Uknown command")
+    //     fmt.Println(command)
+    //     }
+    // }
 
     // TODO: Guardar Wallets cargadas?
 
