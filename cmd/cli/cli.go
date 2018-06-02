@@ -98,6 +98,16 @@ func main() {
 			transaction(os.Args[2],amount)
 		}
 
+	case "check-transaction":
+		if size != 3 {
+
+			log.Fatal(ERROR_INVALID_COMMAND)
+
+		}else{
+
+			checkTransaction(os.Args[2])
+		}
+
 	case "chain":
 		if size != 3{
 
@@ -193,6 +203,32 @@ func transaction(address string, amount float64){
 	q, _ := url.ParseQuery(u.RawQuery)
 	q.Add("address",address)
 	q.Add("amount",fmt.Sprintf("%f",amount))
+	u.RawQuery = q.Encode()
+	req, err := http.NewRequest("GET",u.RawQuery, nil)
+
+	if err != nil {
+
+		log.Fatal(ERROR_GET_FAILED + err.Error())
+	}
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+
+		log.Fatal(ERROR_GET_FAILED + err.Error())
+	}
+
+	log.Println(resp)
+}
+
+func checkTransaction(hash string){
+
+	log.Printf("Stating %f ncoins transaction to %s", amount, address)
+
+	client := &http.Client{}
+	u, _ := url.Parse(fmt.Sprintf("%s%s/check-transaction",DEFAULT_LOCAL_HOST,getPort()))
+	q, _ := url.ParseQuery(u.RawQuery)
+	q.Add("hash",hash)
 	u.RawQuery = q.Encode()
 	req, err := http.NewRequest("GET",u.RawQuery, nil)
 
