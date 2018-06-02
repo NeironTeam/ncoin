@@ -18,8 +18,8 @@ type WalletServer struct {
     pending_transactions []ncw.Transaction  // Transaciones pendientes de enviar
   }
 
-func (s *WalletServer) HttpHandler() {
-    fmt.Println("COMEME LOS HUEVOS")
+func (s *WalletServer) HttpHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "COMEME LOS HUEVOS")
 }
 
 // Inicializa el servidor, lee la lista de nodos e inicializa las carteras.
@@ -31,19 +31,24 @@ func (s *WalletServer) Run() {
     fmt.Println("Initializing walletServer...")
     s.Sync()
     fmt.Println("Wallet sync completed succesfully." )
+
     fmt.Println("Starting HTTP server")
+    http.HandleFunc("/", s.HttpHandler)
+    http.ListenAndServe
+    fmt.Println("Server started; and terminated?")
 
-    server := &http.Server{
-        Addr: ":11811",
-        Handler: s.HttpHandler,
-        ReadTimeout: 10 * time.Seconds,
-        WriteTimeout: 10 * time.Seconds,
-        MaxHeaderBytes: 1 << 20
-    }
-    fmt.Println("Server started, press any key to exit")
-    fmt.Scanln()
+    // START VERY DEPRECATED CODE
+    // server := &http.Server{
+    //     Addr: ":11811",
+    //     Handler: s.HttpHandler,
+    //     ReadTimeout: 10 * time.Seconds,
+    //     WriteTimeout: 10 * time.Seconds,
+    //     MaxHeaderBytes: 1 << 20
+    // }
+    // END VERY DEPRECATED CODE
+    fmt.Println("Server started")
 
-    // DEPRECATED:
+    // START DEPRECATED CODE
     // for {
     //     fmt.Scanln(&command)
     //     if command == "stop" {
@@ -54,6 +59,7 @@ func (s *WalletServer) Run() {
     //     fmt.Println(command)
     //     }
     // }
+    // END DEPRECADTED CODE
 
     // TODO: Guardar Wallets cargadas?
 
