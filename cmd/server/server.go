@@ -24,7 +24,7 @@ func (s *WalletServer) HttpHandler(w http.ResponseWriter, r *http.Request) {
 
 // Inicializa el servidor, lee la lista de nodos e inicializa las carteras.
 func (s *WalletServer) Run() {
-    var command string
+    // var command string
 
     // TODO: Cargar Wallets guardadas
 
@@ -34,7 +34,7 @@ func (s *WalletServer) Run() {
 
     fmt.Println("Starting HTTP server")
     http.HandleFunc("/", s.HttpHandler)
-    http.ListenAndServe
+    http.ListenAndServe(":11811", nil)
     fmt.Println("Server started; and terminated?")
 
     // START VERY DEPRECATED CODE
@@ -85,9 +85,11 @@ func (s *WalletServer) Stop() {
 }
 
 func main() {
-    var a []string
-    server := WalletServer{a}
+    var a []ncw.Wallet
+    var s []string
+    var t []ncw.Transaction
+    server := WalletServer{a, s, t}
 
     server.Run()
-    time.Sleep(time.Seconds * 1)
+    time.Sleep(time.Second * 1)
 }
