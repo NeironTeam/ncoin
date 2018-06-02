@@ -35,7 +35,7 @@ func (s *WalletServer) Run() {
     fmt.Println("Starting HTTP server")
     http.HandleFunc("/", s.HttpHandler)
     http.ListenAndServe(":11811", nil)
-    fmt.Println("Server started; and terminated?")
+    fmt.Println("Server terminated?")
 
     // START VERY DEPRECATED CODE
     // server := &http.Server{
