@@ -3,6 +3,7 @@ package ncoin_wallet
 import (
 	"encoding/hex"
 	"fmt"
+	internals "github.com/NeironTeam/ncoin-wallet/internal"
 )
 
 // private Block struct
@@ -24,7 +25,7 @@ func (b *block) Stringify()(s string){
 }
 
 func (b *block) CalculateHash() string {
-	return hex.EncodeToString(CalculateGenericHash(b.Stringify()))
+	return hex.EncodeToString(internals.CalculateGenericHash(b.Stringify()))
 }
 
 func (b *block) CheckHash( inputHash string) bool {
