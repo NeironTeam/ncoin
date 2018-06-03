@@ -42,3 +42,28 @@ func (b *block) CheckHash(inputHash string) bool {
 	return b.CalculateHash() == inputHash
 
 }
+
+func (b *block) CalculateMerkleTree() (hashList []string, merkleRoot string){
+	for _, transaction := range b.Transactions {
+		hashList = append(hashList, transaction.CalculateHash())
+	}
+	merkleRoot = CalculateMerkleRoot(hashList)
+	return
+}
+
+func CalculateMerkleRoot(hashList []string) (root string) {
+	if len(hashList) == 1 {
+		return hashList[0]
+	}
+	var newLevel []string = make([]string, 0)
+	var pos int = 0;
+	for pos < len(hashList) {
+		if pos+1 == len(hashList){
+			newLevel = append(newLevel, hex.EncodeToString(internal.CalculateGenericHash(hashList[pos]+hashList[pos+1])))
+		} else {
+			newLevel = append(newLevel, hex.EncodeToString(internal.CalculateGenericHash(hashList[pos]+hashList[pos])))
+		}
+	}
+	CalculateMerkleRoot(newLevel)
+	return
+}

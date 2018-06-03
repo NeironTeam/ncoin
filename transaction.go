@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	internal "github.com/NeironTeam/ncoin/internal"
+	"encoding/hex"
 )
 
 //Transaction struct contains all the attributes necessary for one transaction of the blockchain.
@@ -73,6 +74,15 @@ func (t *Transaction) toString() (s string) {
 func (t *Transaction) Stringify() (s string) {
 	s = fmt.Sprintf("%d%d%f%f%s", t.addressTo, t.addressFrom, t.quantity, t.fee, t.sign)
 	return
+}
+
+func (t *Transaction) CalculateHash() string {
+	return hex.EncodeToString(internal.CalculateGenericHash(t.Stringify()))
+}
+
+func (t *Transaction) CheckHash(inputHash string) bool {
+	return t.CalculateHash() == inputHash
+
 }
 
 func TransactionFromJson(r []byte) (t *Transaction, e error) {
