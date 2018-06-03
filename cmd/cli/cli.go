@@ -1,6 +1,7 @@
 package main
 
 import(
+	"io/ioutil"
 	"os"
 	"log"
 	"strconv"
@@ -183,12 +184,17 @@ func balance(address string){
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	var res *http.Response
-	if res, e = client.Do(req); e != nil {
+	var resp *http.Response
+	if resp, e = client.Do(req); e != nil {
 			log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
+	defer resp.Body.Close()
 
-	log.Println(res)
+	if resp.StatusCode == http.StatusOK {
+	    bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	    bodyString := string(bodyBytes)
+		log.Println(bodyString)
+	}
 }
 
 func mine(){
@@ -227,9 +233,13 @@ func transaction(address string, amount float64){
 	if res, e = client.Do(req); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
+	defer resp.Body.Close()
 
-	log.Println(res)
-
+	if resp.StatusCode == http.StatusOK {
+	    bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	    bodyString := string(bodyBytes)
+		log.Println(bodyString)
+	}
 }
 
 func checkTransaction(hash string){
@@ -260,8 +270,13 @@ func checkTransaction(hash string){
 	if res, e = client.Do(req); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
+	defer resp.Body.Close()
 
-	log.Println(res)
+	if resp.StatusCode == http.StatusOK {
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
+		bodyString := string(bodyBytes)
+		log.Println(bodyString)
+	}
 }
 
 func chain(nBlocks int){
@@ -292,7 +307,11 @@ func chain(nBlocks int){
 	if res, e = client.Do(req); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
+	defer resp.Body.Close()
 
-	log.Println(res)
-
+	if resp.StatusCode == http.StatusOK {
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
+		bodyString := string(bodyBytes)
+		log.Println(bodyString)
+	}
 }

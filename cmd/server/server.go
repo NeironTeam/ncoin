@@ -25,7 +25,7 @@ func (s *WalletServer) BalanceHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *WalletServer) ChainHandler(w http.ResponseWriter, r *http.Request) {
-    
+
 }
 
 // Inicializa el servidor, lee la lista de nodos e inicializa las carteras.
@@ -43,30 +43,6 @@ func (s *WalletServer) Run() {
     http.HandleFunc("/chain", s.ChainHandler)
     http.ListenAndServe(":11811", nil)
     fmt.Println("Server terminated?")
-
-    // START VERY DEPRECATED CODE
-    // server := &http.Server{
-    //     Addr: ":11811",
-    //     Handler: s.HttpHandler,
-    //     ReadTimeout: 10 * time.Seconds,
-    //     WriteTimeout: 10 * time.Seconds,
-    //     MaxHeaderBytes: 1 << 20
-    // }
-    // END VERY DEPRECATED CODE
-    fmt.Println("Server started")
-
-    // START DEPRECATED CODE
-    // for {
-    //     fmt.Scanln(&command)
-    //     if command == "stop" {
-    //         s.Stop()
-    //         break
-    //     } else {
-    //     fmt.Println("Uknown command")
-    //     fmt.Println(command)
-    //     }
-    // }
-    // END DEPRECADTED CODE
 
     // TODO: Guardar Wallets cargadas?
 
