@@ -15,7 +15,7 @@ type Transaction struct {
     addressFrom uint64 `json:"addressFrom"`
     quantity    float64 `json:"quantity"`
     sign        []byte `json:"quantity"` 
-    fee         float64 `json:"fee"`
+    fee         float64 `json:"Fee"`
 }
 
 //NewTransaction its a constructor for a new Transaction struct, receive all the attribute of the Transaction except the sign
@@ -23,7 +23,7 @@ func NewTransaction(addressTo uint64, addressFrom uint64, quantity float64, fee 
     return Transaction{addressFrom:addressFrom,addressTo:addressTo,quantity:quantity, fee:fee}
 }
 
-//Fee its the getter for the fee attribute
+//Fee its the getter for the Fee attribute
 func (t *Transaction) Fee() float64 {
     return t.fee
 }
@@ -75,11 +75,11 @@ func (t *Transaction) Stringify() (s string){
     return
 }
 
-func fromJson(r []byte) (t *Transaction, e error) {
+func TransactionFromJson(r []byte) (t *Transaction, e error) {
 	e = json.Unmarshal(r, &t)
 	return
 }
 
-func (t *Transaction) toJson() ([]byte, error) {
+func (t *Transaction) ToJson() ([]byte, error) {
 	return json.Marshal(t)
 }

@@ -4,23 +4,33 @@ import (
 	"encoding/hex"
 	"fmt"
 	internal "github.com/NeironTeam/ncoin-wallet/internal"
+	"encoding/json"
 )
 
 // private Block struct
 
 type block struct {
-	timestamp string
-	transactions []Transaction
-	prevHash string
-	fee float64
-	merkelRoot string
+	Timestamp    string        `json:"timestamp"`
+	Transactions []Transaction `json:"transactions"`
+	PrevHash     string        `json:"prevHash"`
+	Fee          float64       `json:"fee"`
+	MerkelRoot   string        `json:"merkleRoot"`
 }
 
 func (b *block) Stringify()(s string){
-	for _, transaction := range b.transactions {
+	for _, transaction := range b.Transactions {
 		s = fmt.Sprintf("%s%s", s, transaction.Stringify())
 	}
-	s = fmt.Sprintf("%s%s%s%f%s", b.timestamp, s, b.prevHash, b.fee, b.merkelRoot)
+	s = fmt.Sprintf("%s%s%s%f%s", b.Timestamp, s, b.PrevHash, b.Fee, b.MerkelRoot)
+	return
+}
+
+func (b block) ToJson() ([]byte, error) {
+	return json.Marshal(b)
+}
+
+func BlockFromJson(r []byte) (b block, e error) {
+	e = json.Unmarshal(r, &b)
 	return
 }
 
