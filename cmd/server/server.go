@@ -18,8 +18,14 @@ type WalletServer struct {
     pending_transactions []ncw.Transaction  // Transaciones pendientes de enviar
   }
 
-func (s *WalletServer) HttpHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "COMEME LOS HUEVOS")
+func (s *WalletServer) BalanceHandler(w http.ResponseWriter, r *http.Request) {
+    var address string = r.URL.Query().Get("address")
+    fmt.Println(address)
+    w.Write([]byte(address))
+}
+
+func (s *WalletServer) ChainHandler(w http.ResponseWriter, r *http.Request) {
+    
 }
 
 // Inicializa el servidor, lee la lista de nodos e inicializa las carteras.
@@ -33,7 +39,8 @@ func (s *WalletServer) Run() {
     fmt.Println("Wallet sync completed succesfully." )
 
     fmt.Println("Starting HTTP server")
-    http.HandleFunc("/", s.HttpHandler)
+    http.HandleFunc("/balance", s.BalanceHandler)
+    http.HandleFunc("/chain", s.ChainHandler)
     http.ListenAndServe(":11811", nil)
     fmt.Println("Server terminated?")
 

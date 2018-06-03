@@ -6,15 +6,16 @@ import (
     "crypto/rand"
     "fmt"
     internal "github.com/NeironTeam/ncoin-wallet/internal"
+	"encoding/json"
 )
 
 //Transaction struct contains all the attributes necessary for one transaction of the blockchain.
 type Transaction struct {
-    addressTo   uint64
-    addressFrom uint64
-    quantity    float64
-    sign        []byte
-    fee         float64
+    addressTo   uint64 `json:"addressTo"`
+    addressFrom uint64 `json:"addressFrom"`
+    quantity    float64 `json:"quantity"`
+    sign        []byte `json:"quantity"` 
+    fee         float64 `json:"fee"`
 }
 
 //NewTransaction its a constructor for a new Transaction struct, receive all the attribute of the Transaction except the sign
@@ -48,14 +49,11 @@ func (t *Transaction) AddressTo() uint64 {
 }
 
 //Sign sign the transaction with the privateKey *rsa.PrivateKey and set the attribute sign. Return a err if somewhat goes wrong or nil if all it`s ok.
-func (t *Transaction) Sign(privateKey *rsa.PrivateKey) error{
-    hash := internal.CalculateGenericHash(t.toString())
-    sign, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, hash)
-    if err != nil{
-        return err
-    }
-    t.sign = sign
-    return nil
+
+func (t *Transaction) Sign(privateKey *rsa.PrivateKey) (e error) {
+    var hash []byte = internal.CalculateGenericHash(t.toString())
+    t.sign, e = rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, hash)
+    return
 }
 
 //Verify verify the sign of the transaction with the parameter publicKey *rsa.PublicKey. Return a err if somewhat goes wrong or nil if all it`s ok.
@@ -75,4 +73,13 @@ func (t *Transaction) toString() (s string){
 func (t *Transaction) Stringify() (s string){
     s = fmt.Sprintf("%d%d%f%f%s", t.addressTo, t.addressFrom, t.quantity, t.fee, t.sign)
     return
+}
+
+func fromJson(r []byte) (t *Transaction, e error) {
+	e = json.Unmarshal(r, &t)
+	return
+}
+
+func (t *Transaction) toJson() ([]byte, error) {
+	return json.Marshal(t)
 }

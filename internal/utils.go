@@ -33,4 +33,5 @@ func ProcessRIPEMD160(data []byte) []byte {
 	h := ripemd160.New()
 	h.Write(data)
 	return h.Sum(nil)
+
 }
