@@ -8,7 +8,7 @@ import(
 	"net/http"
 	"fmt"
 	"net/url"
-	ncoin "github.com/NeironTeam/ncoin-wallet"
+	ncw "github.com/NeironTeam/ncoin-wallet"
 )
 
 const DEFAULT_WALLET_PORT = "11811"
@@ -28,94 +28,65 @@ const ERROR_INVALID_COMMAND = "Invalid command usage.\n" + HELP_MESSAGE
 const ERROR_COMMAND_NOT_FOUND = "Command not found.\n" + HELP_MESSAGE
 const ERROR_GET_FAILED = "Something went wrong.\n"
 
-
-
-
 type transaction_params []string
 
 func main() {
-
-	var size = len(os.Args)
-	if  size<2 {
-
+	var size int = len(os.Args)
+	if size < 2 {
 		log.Fatal(ERROR_NO_ARGUMENTS)
 	}
 
-	switch os.Args[1]{
-
+	switch os.Args[1] {
 	case "new":
-		if size != 2{
-
+		if size != 2 {
 			log.Fatal(ERROR_INVALID_COMMAND)
-
-		}else{
-
+		} else {
 			newWallet()
 		}
 
 	case "start":
-		if size != 3{
-
+		if size != 3 {
 			log.Fatal(ERROR_INVALID_COMMAND)
-
 		}else{
-
 			start(os.Args[2])
 		}
 
 	case "balance":
-		if size != 3{
-
+		if size != 3 {
 			log.Fatal(ERROR_INVALID_COMMAND)
-
-		}else{
-
+		} else {
 			balance(os.Args[2])
 		}
 
 	case "mine":
-		if size != 2{
-
+		if size != 2 {
 			log.Fatal(ERROR_INVALID_COMMAND)
-
 		}else{
-
 			mine()
 		}
 
-
 	case "transaction":
 		if size != 4 {
-
 			log.Fatal(ERROR_INVALID_COMMAND)
-
-		}else{
-
+		} else {
 			amount, err := strconv.ParseFloat(os.Args[3],64)
 			if err != nil {
 				log.Fatal(ERROR_INVALID_COMMAND)
 			}
-
 			transaction(os.Args[2],amount)
 		}
 
 	case "check-transaction":
 		if size != 3 {
-
 			log.Fatal(ERROR_INVALID_COMMAND)
-
-		}else{
-
+		} else {
 			checkTransaction(os.Args[2])
 		}
 
 	case "chain":
 		if size != 3{
-
 			log.Fatal(ERROR_INVALID_COMMAND)
-
-		}else{
-
+		} else {
 			nBlocks, err := strconv.Atoi(os.Args[2])
 			if err != nil {
 				log.Fatal(ERROR_INVALID_COMMAND)
@@ -140,30 +111,24 @@ func getPort() (walletPort string) {
 	return
 }
 
-func newWallet(){
-
+func newWallet() {
 	log.Println("Creating new wallet ...")
-
-	wallet, err := ncoin.NewWallet()
-
-	if err != nil{
+	
+	if wallet, err := ncw.NewWallet(); err != nil{
 		log.Fatal(ERROR_GET_FAILED + err.Error())
-	}else{
-
+	} else {
 		log.Printf("Wallet created successfully with address %s",wallet.Address())
 	}
 }
 
-func start(address string){
-
+func start(address string) {
 	//TODO: Run server with docker
-
 	log.Printf("Starting wallet on address %s", address )
 }
 
 
-func balance(address string){
-	log.Printf("Checking balance on wallet %s", address )
+func balance(address string) {
+	log.Printf("Checking balance on wallet %s", address)
 	var (
 		e error
 		client *http.Client = &http.Client{}
@@ -180,7 +145,7 @@ func balance(address string){
 	endpoint.RawQuery = q.Encode()
 
 	var req *http.Request
-	if req, e = http.NewRequest("GET", endpoint.String(), nil); e != nil {
+	if req, e = http.NewRequest(http.MethodGet, endpoint.String(), nil); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
@@ -197,24 +162,19 @@ func balance(address string){
 	}
 }
 
-func mine(){
-
+func mine() {
 	log.Println("Starting mining ...")
-
 	//TODO: add miners
 }
 
-func transaction(address string, amount float64){
-
+func transaction(address string, amount float64) {
 	log.Printf("Stating %f ncoins transaction to %s", amount, address)
-
 	var (
 		e error
 		client *http.Client = &http.Client{}
 		endpoint *url.URL
 		uri string = fmt.Sprintf("%s%s/transaction", DEFAULT_LOCAL_HOST, getPort())
 	)
-
 	if endpoint, e = url.Parse(uri); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
@@ -225,7 +185,7 @@ func transaction(address string, amount float64){
 	endpoint.RawQuery = q.Encode()
 
 	var req *http.Request
-	if req, e = http.NewRequest("GET", endpoint.String(), nil); e != nil {
+	if req, e = http.NewRequest(http.MethodGet, endpoint.String(), nil); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
@@ -243,16 +203,13 @@ func transaction(address string, amount float64){
 }
 
 func checkTransaction(hash string){
-
 	log.Printf("Check the state of transaction %s", hash)
-
 	var (
 		e error
 		client *http.Client = &http.Client{}
 		endpoint *url.URL
 		uri string = fmt.Sprintf("%s%s/check-transaction", DEFAULT_LOCAL_HOST, getPort())
 	)
-
 	if endpoint, e = url.Parse(uri); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
@@ -262,7 +219,7 @@ func checkTransaction(hash string){
 	endpoint.RawQuery = q.Encode()
 
 	var req *http.Request
-	if req, e = http.NewRequest("GET", endpoint.String(), nil); e != nil {
+	if req, e = http.NewRequest(http.MethodGet, endpoint.String(), nil); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
@@ -280,16 +237,13 @@ func checkTransaction(hash string){
 }
 
 func chain(nBlocks int){
-
 	log.Printf("Displaying last %d blocks", nBlocks)
-
 	var (
 		e error
 		client *http.Client = &http.Client{}
 		endpoint *url.URL
 		uri string = fmt.Sprintf("%s%s/chain", DEFAULT_LOCAL_HOST, getPort())
 	)
-
 	if endpoint, e = url.Parse(uri); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
@@ -299,7 +253,7 @@ func chain(nBlocks int){
 	endpoint.RawQuery = q.Encode()
 
 	var req *http.Request
-	if req, e = http.NewRequest("GET", endpoint.String(), nil); e != nil {
+	if req, e = http.NewRequest(http.MethodGet, endpoint.String(), nil); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 

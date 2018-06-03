@@ -24,20 +24,16 @@ func (s *WalletServer) BalanceHandler(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(address))
 }
 
-func (s *WalletServer) ChainHandler(w http.ResponseWriter, r *http.Request) {
-
-}
+func (s *WalletServer) ChainHandler(w http.ResponseWriter, r *http.Request) {}
 
 // Inicializa el servidor, lee la lista de nodos e inicializa las carteras.
 func (s *WalletServer) Run() {
-    // var command string
-
     // TODO: Cargar Wallets guardadas
-
     fmt.Println("Initializing walletServer...")
     s.Sync()
     fmt.Println("Wallet sync completed succesfully." )
 
+	// TODO: Load address and host from enviroment or set by default
     fmt.Println("Starting HTTP server")
     http.HandleFunc("/balance", s.BalanceHandler)
     http.HandleFunc("/chain", s.ChainHandler)
@@ -45,26 +41,23 @@ func (s *WalletServer) Run() {
     fmt.Println("Server terminated?")
 
     // TODO: Guardar Wallets cargadas?
-
 }
 
 // Sincroniza con la blockchain para actualizar el saldo de todas las
 // carteras que maneja y enviar las transacciones pendientes,
 // además, actualiza su lista de nodos.
 func (s *WalletServer) Sync() {
-  fmt.Println("Syncing...")
+	fmt.Println("Syncing...")
 }
 
 // Actualiza el estado de una sola cartera. Toma la dirección de la cartera
 // como argumento
-func (s *WalletServer) WalletSync(wallet ncw.Wallet) {
-
-}
+func (s *WalletServer) WalletSync(wallet ncw.Wallet) { }
 
 
 // Detiene el servidor, asegura los cambios, cierra las conexiones, etc...
 func (s *WalletServer) Stop() {
-  fmt.Println("Stopping server...")
+	fmt.Println("Stopping server...")
 }
 
 func main() {
