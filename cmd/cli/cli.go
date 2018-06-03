@@ -1,13 +1,14 @@
 package main
 
 import(
+	"io/ioutil"
 	"os"
 	"log"
 	"strconv"
 	"net/http"
 	"fmt"
 	"net/url"
-	ncoin "github.com/neironteam/ncoin-wallet"
+	ncoin "github.com/NeironTeam/ncoin-wallet"
 )
 
 const DEFAULT_WALLET_PORT = "11811"
@@ -183,12 +184,17 @@ func balance(address string){
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	var res *http.Response
-	if res, e = client.Do(req); e != nil {
+	var resp *http.Response
+	if resp, e = client.Do(req); e != nil {
 			log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
+	defer resp.Body.Close()
 
-	log.Println(res)
+	if resp.StatusCode == http.StatusOK {
+	    bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	    bodyString := string(bodyBytes)
+		log.Println(bodyString)
+	}
 }
 
 func mine(){
@@ -202,77 +208,110 @@ func transaction(address string, amount float64){
 
 	log.Printf("Stating %f ncoins transaction to %s", amount, address)
 
-	client := &http.Client{}
-	u, _ := url.Parse(fmt.Sprintf("%s%s/transaction",DEFAULT_LOCAL_HOST,getPort()))
-	q, _ := url.ParseQuery(u.RawQuery)
-	q.Add("address",address)
-	q.Add("amount",fmt.Sprintf("%f",amount))
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequest("GET",u.RawQuery, nil)
+	var (
+		e error
+		client *http.Client = &http.Client{}
+		endpoint *url.URL
+		uri string = fmt.Sprintf("%s%s/transaction", DEFAULT_LOCAL_HOST, getPort())
+	)
 
-	if err != nil {
-
-		log.Fatal(ERROR_GET_FAILED + err.Error())
+	if endpoint, e = url.Parse(uri); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	resp, err := client.Do(req)
+	var q url.Values = endpoint.Query()
+	q.Add("address", address)
+	q.Add("amount", fmt.Sprintf("%f",amount))
+	endpoint.RawQuery = q.Encode()
 
-	if err != nil {
-
-		log.Fatal(ERROR_GET_FAILED + err.Error())
+	var req *http.Request
+	if req, e = http.NewRequest("GET", endpoint.String(), nil); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	log.Println(resp)
+	var res *http.Response
+	if res, e = client.Do(req); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+	    bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	    bodyString := string(bodyBytes)
+		log.Println(bodyString)
+	}
 }
 
 func checkTransaction(hash string){
 
-	//log.Printf("Stating %f ncoins transaction to %s", amount, address)
+	log.Printf("Check the state of transaction %s", hash)
 
-	client := &http.Client{}
-	u, _ := url.Parse(fmt.Sprintf("%s%s/check-transaction",DEFAULT_LOCAL_HOST,getPort()))
-	q, _ := url.ParseQuery(u.RawQuery)
-	q.Add("hash",hash)
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequest("GET",u.RawQuery, nil)
+	var (
+		e error
+		client *http.Client = &http.Client{}
+		endpoint *url.URL
+		uri string = fmt.Sprintf("%s%s/check-transaction", DEFAULT_LOCAL_HOST, getPort())
+	)
 
-	if err != nil {
-
-		log.Fatal(ERROR_GET_FAILED + err.Error())
+	if endpoint, e = url.Parse(uri); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	resp, err := client.Do(req)
+	var q url.Values = endpoint.Query()
+	q.Add("hash", hash)
+	endpoint.RawQuery = q.Encode()
 
-	if err != nil {
-
-		log.Fatal(ERROR_GET_FAILED + err.Error())
+	var req *http.Request
+	if req, e = http.NewRequest("GET", endpoint.String(), nil); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	log.Println(resp)
+	var res *http.Response
+	if res, e = client.Do(req); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
+		bodyString := string(bodyBytes)
+		log.Println(bodyString)
+	}
 }
 
 func chain(nBlocks int){
 
 	log.Printf("Displaying last %d blocks", nBlocks)
 
-	client := &http.Client{}
-	u, _ := url.Parse(fmt.Sprintf("%s%s/transaction",DEFAULT_LOCAL_HOST,getPort()))
-	q, _ := url.ParseQuery(u.RawQuery)
-	q.Add("nBlocks",fmt.Sprintf("%d",nBlocks))
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequest("GET",u.RawQuery, nil)
+	var (
+		e error
+		client *http.Client = &http.Client{}
+		endpoint *url.URL
+		uri string = fmt.Sprintf("%s%s/chain", DEFAULT_LOCAL_HOST, getPort())
+	)
 
-	if err != nil {
-
-		log.Fatal(ERROR_GET_FAILED + err.Error())
+	if endpoint, e = url.Parse(uri); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	resp, err := client.Do(req)
+	var q url.Values = endpoint.Query()
+	q.Add("nblocks", fmt.Sprintf("%d",nBlocks))
+	endpoint.RawQuery = q.Encode()
 
-	if err != nil {
-
-		log.Fatal(ERROR_GET_FAILED + err.Error())
+	var req *http.Request
+	if req, e = http.NewRequest("GET", endpoint.String(), nil); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	log.Println(resp)
+	var res *http.Response
+	if res, e = client.Do(req); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
+		bodyString := string(bodyBytes)
+		log.Println(bodyString)
+	}
 }
