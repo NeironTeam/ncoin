@@ -2,9 +2,9 @@ package ncoin_wallet
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	internal "github.com/NeironTeam/ncoin-wallet/internal"
-	"encoding/json"
 )
 
 // private Block struct
@@ -17,7 +17,7 @@ type block struct {
 	MerkelRoot   string        `json:"merkleRoot"`
 }
 
-func (b *block) Stringify()(s string){
+func (b *block) Stringify() (s string) {
 	for _, transaction := range b.Transactions {
 		s = fmt.Sprintf("%s%s", s, transaction.Stringify())
 	}
@@ -38,7 +38,7 @@ func (b *block) CalculateHash() string {
 	return hex.EncodeToString(internal.CalculateGenericHash(b.Stringify()))
 }
 
-func (b *block) CheckHash( inputHash string) bool {
+func (b *block) CheckHash(inputHash string) bool {
 	return b.CalculateHash() == inputHash
 
 }

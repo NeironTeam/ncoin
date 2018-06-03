@@ -20,7 +20,6 @@ func GetEnv(envVarName string, defVarValue string) (env string) {
 	return
 }
 
-
 // TODO (Ventura): Revisar, puede no funcionar, mirar las funciones ancestrales
 func ProcessSHA256(data []byte) []byte {
 	h := sha256.New()

@@ -1,9 +1,9 @@
 package ncoin_wallet
 
 import (
-	"github.com/go-redis/redis"
-	"github.com/NeironTeam/ncoin-wallet/internal"
 	"fmt"
+	"github.com/NeironTeam/ncoin-wallet/internal"
+	"github.com/go-redis/redis"
 	"sort"
 )
 
@@ -12,7 +12,7 @@ const REDIS_PORT = "6379"
 
 // Blockchain struct contains all blockchain blocks and reference to last block
 type Blockchain struct {
-	blocks blockList
+	blocks    blockList
 	lastBlock block
 }
 
@@ -29,14 +29,14 @@ func (b *Blockchain) AddBlock(n block) {
 	b.lastBlock = n
 }
 
-func (b *Blockchain) Store(){
+func (b *Blockchain) Store() {
 	var (
 		redisPath string = internal.GetEnv("REDIS_PATH", REDIS_PATH)
 		redisPort string = internal.GetEnv("REDIS_PORT", REDIS_PORT)
 	)
 
 	client := redis.NewClient(&redis.Options{
-		Addr: fmt.Sprintf("%s:%s",redisPath,redisPort),
+		Addr: fmt.Sprintf("%s:%s", redisPath, redisPort),
 	})
 
 	sort.Sort(b.blocks)
@@ -56,14 +56,14 @@ func (b *Blockchain) Store(){
 	}
 }
 
-func (b *Blockchain) Load(){
+func (b *Blockchain) Load() {
 	var (
 		redisPath string = internal.GetEnv("REDIS_PATH", REDIS_PATH)
 		redisPort string = internal.GetEnv("REDIS_PORT", REDIS_PORT)
 	)
 
 	client := redis.NewClient(&redis.Options{
-		Addr: fmt.Sprintf("%s:%s",redisPath,redisPort),
+		Addr: fmt.Sprintf("%s:%s", redisPath, redisPort),
 	})
 
 	if hashes, err := client.HKeys("blocks").Result(); err != nil {

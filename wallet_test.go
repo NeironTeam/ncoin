@@ -5,10 +5,10 @@
 package ncoin_wallet
 
 import (
-    "testing"
+	"testing"
 )
 
-func TestUnlock(t *testing.T)  {
+func TestUnlock(t *testing.T) {
 
 }
 

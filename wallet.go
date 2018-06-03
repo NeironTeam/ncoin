@@ -5,47 +5,47 @@
 package ncoin_wallet
 
 import (
-	"crypto/rsa"
-	"crypto/rand"
-	"github.com/akamensky/base58"
-	"os"
-	"fmt"
-	"crypto/x509"
-	"encoding/pem"
-	"encoding/binary"
 	"bytes"
-	"io"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/binary"
+	"encoding/pem"
+	"fmt"
 	internal "github.com/NeironTeam/ncoin-wallet/internal"
+	"github.com/akamensky/base58"
+	"io"
+	"os"
 )
 
-const WALLET_FOLDER  = ".ncoin"
+const WALLET_FOLDER = ".ncoin"
 
 // Cartera
 type Wallet struct {
-    address     string
-    privateKey  *rsa.PrivateKey
-    publicKey   *rsa.PublicKey
-    balance     float64
+	address    string
+	privateKey *rsa.PrivateKey
+	publicKey  *rsa.PublicKey
+	balance    float64
 }
 
 func (w *Wallet) SetBalance(balance float64) {
-    w.balance = balance
+	w.balance = balance
 }
 
 func (w *Wallet) SetPublicKey(publicKey *rsa.PublicKey) {
-    w.publicKey = publicKey
+	w.publicKey = publicKey
 }
 
 func (w *Wallet) SetPrivateKey(privateKey *rsa.PrivateKey) {
-    w.privateKey = privateKey
+	w.privateKey = privateKey
 }
 
 func (w *Wallet) SetAddress(address string) {
-    w.address = address
+	w.address = address
 }
 
 func (w *Wallet) PublicKey() *rsa.PublicKey {
-    return w.publicKey
+	return w.publicKey
 }
 
 // Desbloquea la wallet, requiere una private_key como parametro.
@@ -61,26 +61,26 @@ func (w *Wallet) SendTransaction(amount float64, address uint64) {
 
 // Devuelve la dirección de la cartera.
 func (w *Wallet) Address() string {
-    return w.address
+	return w.address
 }
 
 // Devuelve el saldo de la cartera.
 func (w *Wallet) Balance() float64 {
-    return w.balance
+	return w.balance
 }
 
 // Devuelve la private_key de la cartera.
 func (w *Wallet) PrivateKey() *rsa.PrivateKey {
-    return w.privateKey
+	return w.privateKey
 }
 
 //GenerateKeys generate the rsa private and public keys, return a err if somewhat goes wrong.
 func (w *Wallet) generateKeys() (e error) {
-    if w.privateKey, e = rsa.GenerateKey(rand.Reader, 2048); e != nil {
-        return
-    }
-    w.publicKey = &w.privateKey.PublicKey
-    return
+	if w.privateKey, e = rsa.GenerateKey(rand.Reader, 2048); e != nil {
+		return
+	}
+	w.publicKey = &w.privateKey.PublicKey
+	return
 }
 
 // TODO: Import/Export wallet with public/private key pair

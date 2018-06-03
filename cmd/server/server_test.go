@@ -4,7 +4,7 @@
 package main
 
 import (
-    "testing"
+	"testing"
 )
 
 func TestRun(t *testing.T) {
