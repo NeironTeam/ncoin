@@ -3,14 +3,14 @@ package ncoin_wallet
 import (
 	"encoding/hex"
 	"fmt"
-	internals "github.com/NeironTeam/ncoin-wallet/internal"
+	internal "github.com/NeironTeam/ncoin-wallet/internal"
 )
 
 // private Block struct
 
 type block struct {
 	timestamp string
-	transactions [] Transaction
+	transactions []Transaction
 	prevHash string
 	fee float64
 	merkelRoot string
@@ -25,7 +25,7 @@ func (b *block) Stringify()(s string){
 }
 
 func (b *block) CalculateHash() string {
-	return hex.EncodeToString(internals.CalculateGenericHash(b.Stringify()))
+	return hex.EncodeToString(internal.CalculateGenericHash(b.Stringify()))
 }
 
 func (b *block) CheckHash( inputHash string) bool {
