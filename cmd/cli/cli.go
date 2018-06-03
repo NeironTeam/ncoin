@@ -19,7 +19,7 @@ const HELP_MESSAGE = `Usage:
 	start <address>
 	balance <address>
 	mine
-	transaction	<address>	<amount> 
+	transaction	<address>	<amount>
 	chain	<nBlocks>
 `
 const ERROR_NO_ARGUMENTS = "No arguments. \n" + HELP_MESSAGE
@@ -162,29 +162,33 @@ func start(address string){
 
 
 func balance(address string){
-
 	log.Printf("Checking balance on wallet %s", address )
+	var (
+		e error
+		client *http.Client = &http.Client{}
+		endpoint *url.URL
+		uri string = fmt.Sprintf("%s%s/balance", DEFAULT_LOCAL_HOST, getPort())
+	)
 
-	client := &http.Client{}
-	u, _ := url.Parse(fmt.Sprintf("%s%s/balance",DEFAULT_LOCAL_HOST,getPort()))
-	q, _ := url.ParseQuery(u.RawQuery)
-	q.Add("address",address)
-	u.RawQuery = q.Encode()
-	req, err := http.NewRequest("GET",u.RawQuery, nil)
-
-	if err != nil {
-
-		log.Fatal(ERROR_GET_FAILED + err.Error())
+	if endpoint, e = url.Parse(uri); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	resp, err := client.Do(req)
+	var q url.Values = endpoint.Query()
+	q.Add("address", address)
+	endpoint.RawQuery = q.Encode()
 
-	if err != nil {
-
-		log.Fatal(ERROR_GET_FAILED + err.Error())
+	var req *http.Request
+	if req, e = http.NewRequest("GET", endpoint.String(), nil); e != nil {
+		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	log.Println(resp)
+	var res *http.Response
+	if res, e = client.Do(req); e != nil {
+			log.Fatal(ERROR_GET_FAILED + e.Error())
+	}
+
+	log.Println(res)
 }
 
 func mine(){
@@ -223,7 +227,7 @@ func transaction(address string, amount float64){
 
 func checkTransaction(hash string){
 
-	log.Printf("Stating %f ncoins transaction to %s", amount, address)
+	//log.Printf("Stating %f ncoins transaction to %s", amount, address)
 
 	client := &http.Client{}
 	u, _ := url.Parse(fmt.Sprintf("%s%s/check-transaction",DEFAULT_LOCAL_HOST,getPort()))
