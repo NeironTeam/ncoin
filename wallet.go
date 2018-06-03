@@ -10,6 +10,7 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/pem"
+	"encoding/hex"
 	"fmt"
 	internal "github.com/NeironTeam/ncoin/internal"
 	"os"
@@ -33,7 +34,7 @@ func getWalletFolder() string {
 
 // Cartera
 type Wallet struct {
-	address    string
+	address    []byte
 	privateKey *rsa.PrivateKey
 	publicKey  *rsa.PublicKey
 	balance    float64
@@ -51,7 +52,7 @@ func (w *Wallet) SetPrivateKey(privateKey *rsa.PrivateKey) {
 	w.privateKey = privateKey
 }
 
-func (w *Wallet) SetAddress(address string) {
+func (w *Wallet) SetAddress(address []byte) {
 	w.address = address
 }
 
@@ -71,7 +72,7 @@ func (w *Wallet) SendTransaction(amount float64, address uint64) {
 }
 
 // Devuelve la dirección de la cartera.
-func (w *Wallet) Address() string {
+func (w *Wallet) Address() []byte {
 	return w.address
 }
 
@@ -102,7 +103,9 @@ func (w *Wallet) generateAddress() (e error) {
 		return
 	}
 
-	w.address = fmt.Sprintf("%x", sha256.Sum256(randAddress))
+	h := sha256.New()
+	h.Write(randAddress)
+	w.address = []byte(hex.EncodeToString(h.Sum(nil))) 
 	return
 }
 
