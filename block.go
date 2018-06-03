@@ -1,10 +1,10 @@
 package ncoin_wallet
 
 import (
-	"encoding/hex"
-	"encoding/json"
 	"fmt"
-	internal "github.com/NeironTeam/ncoin/internal"
+	"encoding/json"
+	"encoding/hex"
+	"github.com/NeironTeam/ncoin/internal"
 )
 
 // private Block struct
@@ -15,6 +15,7 @@ type block struct {
 	PrevHash     string        `json:"prevHash"`
 	Fee          float64       `json:"fee"`
 	MerkelRoot   string        `json:"merkleRoot"`
+	HashTrList []string	        `json:"HashTrList"`
 }
 
 func (b *block) Stringify() (s string) {
@@ -41,4 +42,29 @@ func (b *block) CalculateHash() string {
 func (b *block) CheckHash(inputHash string) bool {
 	return b.CalculateHash() == inputHash
 
+}
+
+func (b *block) CalculateMerkleTree() {
+	for _, transaction := range b.Transactions {
+		b.HashTrList = append(b.HashTrList, transaction.CalculateHash())
+	}
+	b.MerkelRoot = CalculateMerkleRoot(b.HashTrList)
+	return
+}
+
+func CalculateMerkleRoot(hashList []string) (root string) {
+	if len(hashList) == 1 {
+		return hashList[0]
+	}
+	var newLevel []string = make([]string, 0)
+	var pos int = 0;
+	for pos < len(hashList) {
+		if pos+1 == len(hashList){
+			newLevel = append(newLevel, hex.EncodeToString(internal.CalculateGenericHash(hashList[pos]+hashList[pos+1])))
+		} else {
+			newLevel = append(newLevel, hex.EncodeToString(internal.CalculateGenericHash(hashList[pos]+hashList[pos])))
+		}
+	}
+	CalculateMerkleRoot(newLevel)
+	return
 }
