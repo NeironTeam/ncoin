@@ -15,6 +15,7 @@ import (
 	"encoding/binary"
 	"bytes"
 	"io"
+	internal "github.com/NeironTeam/ncoin-wallet/internal"
 )
 
 const WALLET_FOLDER  = ".ncoin"
@@ -88,49 +89,46 @@ func (w *Wallet) generateKeys() (e error) {
 //  Generates a address on base58check format assuming private and public keys
 // have been already declared.
 func (w *Wallet) generateAddress() {
-	var bytes_array []byte
-	a := io.Writer(bytes.NewBuffer(bytes_array))
-	binary.Write(a, binary.LittleEndian, w.publicKey.E)
-	data := &bytes_array
-	var checksum [4]byte
+	var data []byte
+	var wr io.Writer = io.Writer(bytes.NewBuffer(data))
+	binary.Write(wr, binary.LittleEndian, w.publicKey.E)
+
+	var checksum []byte
 	var base58_address string
 
 	// step 1 & 2
-	ProcessSHA256(data)
-	ProcessRIPEMD160(data)
+	data = internal.ProcessSHA256(data)
+	data = internal.ProcessRIPEMD160(data)
 
 	// Add version byte
-	binary_address := []byte{0}
-	for i := 0; i < len(bytes_array); i++ {
-		binary_address = append(binary_address, bytes_array[i])
+	var binaryAddress []byte
+	for i := 0; i < len(data); i++ {
+		binaryAddress = append(binaryAddress, data[i])
 	}
-	bytes_array = binary_address
+	data = binaryAddress
 
 	//step 4 & 5
-	ProcessSHA256(data)
-	ProcessSHA256(data)
+	internal.ProcessSHA256(data)
+	internal.ProcessSHA256(data)
 
 	// get the checksum
 	for i := 0; i < 4; i++ {
-		checksum[i] = bytes_array[i]
+		checksum[i] = data[i]
 	}
 
 	// Final binary address
 	for i := 0; i < len(checksum); i++ {
-		binary_address = append(binary_address, checksum[i])
+		binaryAddress = append(binaryAddress, checksum[i])
 	}
 
 	// base58check format
-	base58_address = base58.Encode(binary_address)
+	base58_address = base58.Encode(binaryAddress)
 	w.address = base58_address
 }
 
 func (w *Wallet) storeWallet() (e error) {
 	// Check WALLET_FOLDER from enviroment
-	var walletsPath string
-	if walletsPath = os.Getenv("WALLET_FOLDER"); walletsPath == "" {
-		walletsPath = WALLET_FOLDER
-	}
+	var walletsPath = internal.GetEnv("WALLET_FOLDER", WALLET_FOLDER)
 
 	// Check if walletsPath exits, else create it.
 	if _, e = os.Stat(walletsPath); os.IsNotExist(e) {
