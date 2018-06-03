@@ -15,13 +15,15 @@ func CalculateGenericHash(s string) []byte {
 // TODO (Ventura): Revisar, puede no funcionar, mirar las funciones ancestrales
 func ProcessSHA256(data *[]byte) {
 	h := sha256.New()
-	h.Write(data)
-	data = h.Sum(nil)
+	h.Write(*data)
+	d := h.Sum(nil)
+	data = &d
 }
 
 // TODO (Ventura): Revisar, puede no funcionar, mirar las funciones ancestrales
 func ProcessRIPEMD160(data *[]byte) {
 	h := ripemd160.New()
-	h.Write(data)
-	data = h.Sum(nil)
+	h.Write(*data)
+	d := h.Sum(nil)
+	data = &d
 }
