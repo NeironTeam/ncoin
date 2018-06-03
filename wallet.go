@@ -5,22 +5,19 @@
 package ncoin_wallet
 
 import (
-	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"crypto/x509"
-	"encoding/binary"
 	"encoding/pem"
 	"fmt"
 	internal "github.com/NeironTeam/ncoin/internal"
-	"github.com/akamensky/base58"
-	"io"
 	"os"
 	"runtime"
 )
 
-// TODO: Cross home reference
 const WALLET_FOLDER = ".ncoin"
+const SEED_SIZE = 512 //bytes
 
 func getWalletFolder() string {
 	var base string = "HOME"
@@ -97,47 +94,16 @@ func (w *Wallet) generateKeys() (e error) {
 	return
 }
 
-// TODO: Import/Export wallet with public/private key pair
-
-// Based on protocol defined in https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses
-//  Generates a address on base58check format assuming private and public keys
-// have been already declared.
-func (w *Wallet) generateAddress() {
-	var data []byte
-	var wr io.Writer = io.Writer(bytes.NewBuffer(data))
-	binary.Write(wr, binary.LittleEndian, w.publicKey.E)
-
-	var checksum []byte = make([]byte, 4)
-	var base58_address string
-
-	// step 1 & 2
-	data = internal.ProcessSHA256(data)
-	data = internal.ProcessRIPEMD160(data)
-
-	// Add version byte
-	var binaryAddress []byte
-	for i := 0; i < len(data); i++ {
-		binaryAddress = append(binaryAddress, data[i])
-	}
-	data = binaryAddress
-
-	//step 4 & 5
-	internal.ProcessSHA256(data)
-	internal.ProcessSHA256(data)
-
-	// get the checksum
-	for i := 0; i < 4; i++ {
-		checksum[i] = data[i]
+// generateAddress function return random seed hashed with sha256 to use as
+// wallet address
+func (w *Wallet) generateAddress() (e error) {
+	var randAddress []byte = make([]byte, 512)
+	if _, e = rand.Read(randAddress); e != nil {
+		return
 	}
 
-	// Final binary address
-	for i := 0; i < len(checksum); i++ {
-		binaryAddress = append(binaryAddress, checksum[i])
-	}
-
-	// base58check format
-	base58_address = base58.Encode(binaryAddress)
-	w.address = base58_address
+	w.address = fmt.Sprintf("%x", sha256.Sum256(randAddress))
+	return
 }
 
 func (w *Wallet) storeWallet() (e error) {
@@ -153,7 +119,7 @@ func (w *Wallet) storeWallet() (e error) {
 		return
 	}
 
-	// Create walletFolder to store key pair
+	// Create walletFolder to store key pair if not exists
 	var walletFolder string = fmt.Sprintf("%s/%s", walletsPath, w.address)
 	if e = os.Mkdir(walletFolder, os.ModePerm); e != nil {
 		return
@@ -163,8 +129,10 @@ func (w *Wallet) storeWallet() (e error) {
 	var pubPem []byte
 	if pubPem, e = x509.MarshalPKIXPublicKey(w.publicKey); e != nil {
 		return
-	} else if e = w.storePem(pubPem, walletFolder, true); e != nil {
-		return
+	} else {
+		if e = w.storePem(pubPem, walletFolder, true); e != nil {
+			return
+		}
 	}
 
 	// Generate private key pem and store it
@@ -186,7 +154,7 @@ func (w *Wallet) storePem(key []byte, folder string, public bool) (e error) {
 			Bytes: key,
 		},
 	)
-
+	
 	var fd *os.File
 	var pemPath string = fmt.Sprintf("%s/%s", folder, file)
 	if fd, e = os.Create(pemPath); e != nil {
