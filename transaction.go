@@ -5,6 +5,7 @@ import (
     "crypto"
     "crypto/rand"
     "fmt"
+    internal "github.com/NeironTeam/ncoin-wallet/internal"
 )
 
 //Transaction struct contains all the attributes necessary for one transaction of the blockchain.
@@ -48,7 +49,7 @@ func (t *Transaction) AddressTo() uint64 {
 
 //Sign sign the transaction with the privateKey *rsa.PrivateKey and set the attribute sign. Return a err if somewhat goes wrong or nil if all it`s ok.
 func (t *Transaction) Sign(privateKey *rsa.PrivateKey) error{
-    hash := CalculateGenericHash(t.toString())
+    hash := internal.CalculateGenericHash(t.toString())
     sign, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA256, hash)
     if err != nil{
         return err
@@ -59,7 +60,7 @@ func (t *Transaction) Sign(privateKey *rsa.PrivateKey) error{
 
 //Verify verify the sign of the transaction with the parameter publicKey *rsa.PublicKey. Return a err if somewhat goes wrong or nil if all it`s ok.
 func (t *Transaction) Verify(publicKey *rsa.PublicKey) error{
-    hash := CalculateGenericHash(t.toString())
+    hash := internal.CalculateGenericHash(t.toString())
     err := rsa.VerifyPKCS1v15(publicKey,crypto.SHA256,hash, t.GetSign() )
 
     return err
