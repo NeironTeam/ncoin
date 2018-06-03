@@ -16,9 +16,23 @@ import (
 	"github.com/akamensky/base58"
 	"io"
 	"os"
+	"runtime"
 )
 
+// TODO: Cross home reference
 const WALLET_FOLDER = ".ncoin"
+
+func getWalletFolder() string {
+    var base string = "HOME"
+    if runtime.GOOS == "windows" {
+        base = "USERPROFILE"
+    } else if runtime.GOOS == "plan9" {
+        base = "home"
+    }
+
+    var path string = internal.Getenv("WALLET_FOLDER", WALLET_FOLDER)
+	return fmt.Sprintf("%s/%s", os.Getenv(base), path)
+}
 
 // Cartera
 type Wallet struct {
@@ -93,7 +107,7 @@ func (w *Wallet) generateAddress() {
 	var wr io.Writer = io.Writer(bytes.NewBuffer(data))
 	binary.Write(wr, binary.LittleEndian, w.publicKey.E)
 
-	var checksum []byte
+	var checksum []byte = make([]byte, 4)
 	var base58_address string
 
 	// step 1 & 2
@@ -128,14 +142,14 @@ func (w *Wallet) generateAddress() {
 
 func (w *Wallet) storeWallet() (e error) {
 	// Check WALLET_FOLDER from enviroment
-	var walletsPath = internal.GetEnv("WALLET_FOLDER", WALLET_FOLDER)
+	var walletsPath string = getWalletFolder()
 
 	// Check if walletsPath exits, else create it.
 	if _, e = os.Stat(walletsPath); os.IsNotExist(e) {
 		if e = os.Mkdir(walletsPath, os.ModePerm); e != nil {
-			return nil
+			return
 		}
-	} else {
+	} else if e != nil {
 		return
 	}
 
@@ -187,6 +201,7 @@ func (w *Wallet) storePem(key []byte, folder string, public bool) (e error) {
 }
 
 func NewWallet() (w *Wallet, e error) {
+	w = &Wallet{}
 	if e = w.generateKeys(); e != nil {
 		return
 	}

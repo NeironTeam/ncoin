@@ -13,9 +13,9 @@ func CalculateGenericHash(s string) []byte {
 	return h.Sum(nil)
 }
 
-func GetEnv(envVarName string, defVarValue string) (env string) {
-	if env = os.Getenv(envVarName); env == "" {
-		env = defVarValue
+func Getenv(key string, def string) (value string) {
+	if value = os.Getenv(key); value == "" {
+		value = def
 	}
 	return
 }

@@ -31,8 +31,8 @@ func (b *Blockchain) AddBlock(n block) {
 
 func (b *Blockchain) Store() {
 	var (
-		redisPath string = internal.GetEnv("REDIS_PATH", REDIS_PATH)
-		redisPort string = internal.GetEnv("REDIS_PORT", REDIS_PORT)
+		redisPath string = internal.Getenv("REDIS_PATH", REDIS_PATH)
+		redisPort string = internal.Getenv("REDIS_PORT", REDIS_PORT)
 	)
 
 	client := redis.NewClient(&redis.Options{
@@ -58,8 +58,8 @@ func (b *Blockchain) Store() {
 
 func (b *Blockchain) Load() {
 	var (
-		redisPath string = internal.GetEnv("REDIS_PATH", REDIS_PATH)
-		redisPort string = internal.GetEnv("REDIS_PORT", REDIS_PORT)
+		redisPath string = internal.Getenv("REDIS_PATH", REDIS_PATH)
+		redisPort string = internal.Getenv("REDIS_PORT", REDIS_PORT)
 	)
 
 	client := redis.NewClient(&redis.Options{

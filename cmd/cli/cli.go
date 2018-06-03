@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	ncw "github.com/NeironTeam/ncoin-wallet"
+	internal "github.com/NeironTeam/ncoin-wallet/internal"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,8 +12,20 @@ import (
 	"strconv"
 )
 
+const baseUri = "https://%s:%s"
 const DEFAULT_WALLET_PORT = "11811"
-const DEFAULT_LOCAL_HOST = "http://localhost:"
+const DEFAULT_WALLET_HOST = "localhost"
+
+func getUri() string {
+	var walletHost string = internal.Getenv("WALLET_HOST", DEFAULT_WALLET_HOST)	
+	var walletPort string = internal.Getenv("WALLET_PORT", DEFAULT_WALLET_PORT)
+
+	return fmt.Sprintf(baseUri, walletHost, walletPort)
+}
+
+func composeUri(path string) string {
+	return fmt.Sprintf("%s%s", getUri(), path)	
+}
 
 const HELP_MESSAGE = `Usage:
 	new
@@ -101,14 +114,6 @@ func main() {
 	return
 }
 
-// Returns the enviroment var
-func getPort() (walletPort string) {
-	if walletPort = os.Getenv("WALLET_PORT"); walletPort == "" {
-		walletPort = DEFAULT_WALLET_PORT
-	}
-	return
-}
-
 func newWallet() {
 	log.Println("Creating new wallet ...")
 
@@ -130,7 +135,7 @@ func balance(address string) {
 		e        error
 		client   *http.Client = &http.Client{}
 		endpoint *url.URL
-		uri      string = fmt.Sprintf("%s%s/balance", DEFAULT_LOCAL_HOST, getPort())
+		uri      string = composeUri("/balance")
 	)
 
 	if endpoint, e = url.Parse(uri); e != nil {
@@ -170,7 +175,7 @@ func transaction(address string, amount float64) {
 		e        error
 		client   *http.Client = &http.Client{}
 		endpoint *url.URL
-		uri      string = fmt.Sprintf("%s%s/transaction", DEFAULT_LOCAL_HOST, getPort())
+		uri      string = composeUri("/transaction")
 	)
 	if endpoint, e = url.Parse(uri); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
@@ -205,7 +210,7 @@ func checkTransaction(hash string) {
 		e        error
 		client   *http.Client = &http.Client{}
 		endpoint *url.URL
-		uri      string = fmt.Sprintf("%s%s/check-transaction", DEFAULT_LOCAL_HOST, getPort())
+		uri      string = composeUri("/check-transaction")
 	)
 	if endpoint, e = url.Parse(uri); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
@@ -239,7 +244,7 @@ func chain(nBlocks int) {
 		e        error
 		client   *http.Client = &http.Client{}
 		endpoint *url.URL
-		uri      string = fmt.Sprintf("%s%s/chain", DEFAULT_LOCAL_HOST, getPort())
+		uri      string = composeUri("/chain")
 	)
 	if endpoint, e = url.Parse(uri); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
