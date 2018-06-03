@@ -23,14 +23,14 @@ import (
 const WALLET_FOLDER = ".ncoin"
 
 func getWalletFolder() string {
-    var base string = "HOME"
-    if runtime.GOOS == "windows" {
-        base = "USERPROFILE"
-    } else if runtime.GOOS == "plan9" {
-        base = "home"
-    }
+	var base string = "HOME"
+	if runtime.GOOS == "windows" {
+		base = "USERPROFILE"
+	} else if runtime.GOOS == "plan9" {
+		base = "home"
+	}
 
-    var path string = internal.Getenv("WALLET_FOLDER", WALLET_FOLDER)
+	var path string = internal.Getenv("WALLET_FOLDER", WALLET_FOLDER)
 	return fmt.Sprintf("%s/%s", os.Getenv(base), path)
 }
 

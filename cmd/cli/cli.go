@@ -17,14 +17,14 @@ const DEFAULT_WALLET_PORT = "11811"
 const DEFAULT_WALLET_HOST = "localhost"
 
 func getUri() string {
-	var walletHost string = internal.Getenv("WALLET_HOST", DEFAULT_WALLET_HOST)	
+	var walletHost string = internal.Getenv("WALLET_HOST", DEFAULT_WALLET_HOST)
 	var walletPort string = internal.Getenv("WALLET_PORT", DEFAULT_WALLET_PORT)
 
 	return fmt.Sprintf(baseUri, walletHost, walletPort)
 }
 
 func composeUri(path string) string {
-	return fmt.Sprintf("%s%s", getUri(), path)	
+	return fmt.Sprintf("%s%s", getUri(), path)
 }
 
 const HELP_MESSAGE = `Usage:
