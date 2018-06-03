@@ -1,10 +1,10 @@
 package ncoin_wallet
 
 import (
-	"encoding/hex"
-	"encoding/json"
 	"fmt"
-	internal "github.com/NeironTeam/ncoin/internal"
+	"encoding/json"
+	"encoding/hex"
+	"github.com/NeironTeam/ncoin/internal"
 )
 
 // private Block struct
@@ -15,6 +15,7 @@ type block struct {
 	PrevHash     string        `json:"prevHash"`
 	Fee          float64       `json:"fee"`
 	MerkelRoot   string        `json:"merkleRoot"`
+	HashTrList []string	        `json:"HashTrList"`
 }
 
 func (b *block) Stringify() (s string) {
@@ -43,11 +44,11 @@ func (b *block) CheckHash(inputHash string) bool {
 
 }
 
-func (b *block) CalculateMerkleTree() (hashList []string, merkleRoot string){
+func (b *block) CalculateMerkleTree() {
 	for _, transaction := range b.Transactions {
-		hashList = append(hashList, transaction.CalculateHash())
+		b.HashTrList = append(b.HashTrList, transaction.CalculateHash())
 	}
-	merkleRoot = CalculateMerkleRoot(hashList)
+	b.MerkelRoot = CalculateMerkleRoot(b.HashTrList)
 	return
 }
 
