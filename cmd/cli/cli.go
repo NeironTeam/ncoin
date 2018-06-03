@@ -12,21 +12,6 @@ import (
 	"strconv"
 )
 
-const baseUri = "https://%s:%s"
-const DEFAULT_WALLET_PORT = "11811"
-const DEFAULT_WALLET_HOST = "localhost"
-
-func getUri() string {
-	var walletHost string = internal.Getenv("WALLET_HOST", DEFAULT_WALLET_HOST)
-	var walletPort string = internal.Getenv("WALLET_PORT", DEFAULT_WALLET_PORT)
-
-	return fmt.Sprintf(baseUri, walletHost, walletPort)
-}
-
-func composeUri(path string) string {
-	return fmt.Sprintf("%s%s", getUri(), path)
-}
-
 const HELP_MESSAGE = `Usage:
 	new
 	start <address>
@@ -135,7 +120,7 @@ func balance(address string) {
 		e        error
 		client   *http.Client = &http.Client{}
 		endpoint *url.URL
-		uri      string = composeUri("/balance")
+		uri      string = internal.ComposeHostUri("/balance")
 	)
 
 	if endpoint, e = url.Parse(uri); e != nil {
@@ -175,7 +160,7 @@ func transaction(address string, amount float64) {
 		e        error
 		client   *http.Client = &http.Client{}
 		endpoint *url.URL
-		uri      string = composeUri("/transaction")
+		uri      string = internal.ComposeHostUri("/transaction")
 	)
 	if endpoint, e = url.Parse(uri); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
@@ -210,7 +195,7 @@ func checkTransaction(hash string) {
 		e        error
 		client   *http.Client = &http.Client{}
 		endpoint *url.URL
-		uri      string = composeUri("/check-transaction")
+		uri      string = internal.ComposeHostUri("/check-transaction")
 	)
 	if endpoint, e = url.Parse(uri); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
@@ -244,7 +229,7 @@ func chain(nBlocks int) {
 		e        error
 		client   *http.Client = &http.Client{}
 		endpoint *url.URL
-		uri      string = composeUri("/chain")
+		uri      string = internal.ComposeHostUri("/chain")
 	)
 	if endpoint, e = url.Parse(uri); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
