@@ -186,8 +186,8 @@ func transaction(address string, amount float64) {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	var res *http.Response
-	if res, e = client.Do(req); e != nil {
+	var resp *http.Response
+	if resp, e = client.Do(req); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 	defer resp.Body.Close()
@@ -220,8 +220,8 @@ func checkTransaction(hash string) {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	var res *http.Response
-	if res, e = client.Do(req); e != nil {
+	var resp *http.Response
+	if resp, e = client.Do(req); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 	defer resp.Body.Close()
@@ -254,8 +254,8 @@ func chain(nBlocks int) {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 
-	var res *http.Response
-	if res, e = client.Do(req); e != nil {
+	var resp *http.Response
+	if resp, e = client.Do(req); e != nil {
 		log.Fatal(ERROR_GET_FAILED + e.Error())
 	}
 	defer resp.Body.Close()
