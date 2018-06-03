@@ -6,7 +6,7 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"fmt"
-	internal "github.com/NeironTeam/ncoin-wallet/internal"
+	internal "github.com/NeironTeam/ncoin/internal"
 )
 
 //Transaction struct contains all the attributes necessary for one transaction of the blockchain.

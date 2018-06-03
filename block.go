@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	internal "github.com/NeironTeam/ncoin-wallet/internal"
+	internal "github.com/NeironTeam/ncoin/internal"
 )
 
 // private Block struct

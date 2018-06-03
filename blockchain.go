@@ -2,7 +2,7 @@ package ncoin_wallet
 
 import (
 	"fmt"
-	"github.com/NeironTeam/ncoin-wallet/internal"
+	"github.com/NeironTeam/ncoin/internal"
 	"github.com/go-redis/redis"
 	"sort"
 )

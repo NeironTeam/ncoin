@@ -6,8 +6,8 @@ package main
 
 import (
 	"fmt"
-	ncw "github.com/NeironTeam/ncoin-wallet"
-	internal "github.com/NeironTeam/ncoin-wallet/internal"
+	ncw "github.com/NeironTeam/ncoin"
+	internal "github.com/NeironTeam/ncoin/internal"
 	"net/http"
 	"time"
 )

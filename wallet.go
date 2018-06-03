@@ -12,7 +12,7 @@ import (
 	"encoding/binary"
 	"encoding/pem"
 	"fmt"
-	internal "github.com/NeironTeam/ncoin-wallet/internal"
+	internal "github.com/NeironTeam/ncoin/internal"
 	"github.com/akamensky/base58"
 	"io"
 	"os"
